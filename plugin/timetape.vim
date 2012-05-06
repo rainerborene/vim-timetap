@@ -11,7 +11,6 @@ endif
 
 let g:timetape_loaded = 1
 let g:timetape_database = "~/.timetapeinfo"
-let g:timetape_hour_price = "45"
 let s:timetape_entries = {}
 
 if !exists("g:timetape_do_mapping") || g:timetape_do_mapping == 1
