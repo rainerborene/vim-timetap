@@ -27,6 +27,24 @@ function! s:DateDebug(values) " {{{
   echo printf("%s - %s - %s", from, to, diff)
 endfunction " }}}
 
+function! s:PrettyPrint(seconds) " {{{
+  let pp = []
+  let hours = floor(a:seconds / 3600)
+  let minutes = ceil(fmod(a:seconds, 3600) / 60)
+  if hours > 0
+    call add(pp, float2nr(hours))
+    call add(pp, hours > 1 ? "hours" : "hour")
+  endif
+  if hours > 0 && minutes > 0
+    call add(pp, "and")
+  endif
+  if minutes > 0
+    call add(pp, float2nr(minutes))
+    call add(pp, minutes > 1 ? "minutes" : "minute")
+  endif
+  return join(pp)
+endfunction " }}}
+
 function! s:TrackBuffer() " {{{
   let s:timetape_entries[expand("%:p")] = localtime()
 endfunction " }}}
@@ -59,15 +77,14 @@ function! s:HoursWasted() " {{{
   let seconds = 0
   for line in readfile(expand(g:timetape_database), '')
     let fields = split(line, "|")
-    if fields[0] =~ query
+    if !empty(fields) && fields[0] =~ query
       let period = abs(fields[1] - fields[2])
       let seconds += period
     endif
   endfor
-  let total = seconds / 60.0 / 60.0
 
   echohl Title
-  echo "You worked " . string(total) . " hours."
+  echo "You worked " . s:PrettyPrint(seconds) . "."
   echohl None
 endfunction " }}}
 
