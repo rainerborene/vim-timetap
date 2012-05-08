@@ -11,7 +11,7 @@ endif
 
 let g:timetap_loaded = 1
 let g:timetap_database = "~/.timetapinfo"
-let s:timetap_records = {}
+let s:timetap_records = { '__cache': [] }
 
 if !exists("g:timetap_do_mapping") || g:timetap_do_mapping == 1
   nnoremap <leader>h :TimeTap<cr>
@@ -50,23 +50,24 @@ function! s:TrackBuffer() " {{{
 endfunction " }}}
 
 function! s:StopTracking() " {{{
-  let l:full_path = expand("%:p")
-  let l:start_date = get(s:timetap_records, l:full_path)
-  let l:end_date = localtime()
+  let full_path = expand("%:p")
+  let start_date = get(s:timetap_records, full_path)
+  let end_date = localtime()
 
-  " Register values to the database
-  call s:Register(l:full_path, l:start_date, l:end_date)
-
-  " Restart current timestamp
-  let s:timetap_records[l:full_path] = localtime()
+  if !empty(full_path)
+    let line = printf("%s|%s|%s", full_path, start_date, end_date)
+    call add(s:timetap_records['__cache'], line)
+    let s:timetap_records[full_path] = localtime()
+  endif
 endfunction " }}}
 
-function! s:Register(path, start, end) "{{{
-  silent exe '!touch ' . g:timetap_database
-  let l:line = printf("%s|%s|%s", a:path, a:start, a:end)
-  let l:data = readfile(expand(g:timetap_database), "b")
-  call add(l:data, l:line)
-  call writefile(l:data, expand(g:timetap_database), "b")
+function! s:SaveDatabase() "{{{
+  let data = readfile(expand(g:timetap_database), "b")
+  for line in s:timetap_records['__cache']
+    call add(data, line)
+  endfor
+  call writefile(data, expand(g:timetap_database), "b")
+  let s:timetap_records['__cache'] = []
 endfunction " }}}
 
 function! s:HoursWasted() " {{{
@@ -83,9 +84,15 @@ function! s:HoursWasted() " {{{
     endif
   endfor
 
-  echohl Title
-  echo "You worked " . s:PrettyPrint(seconds) . "."
-  echohl None
+  if seconds
+    echohl Title
+    echo "You worked " . s:PrettyPrint(seconds) . "."
+    echohl None
+  else
+    echohl ErrorMsg
+    echom "You didn't work in this directory yet."
+    echohl None
+  endif
 endfunction " }}}
 
 command! -nargs=0 TimeTap call s:HoursWasted()
@@ -93,7 +100,8 @@ command! -nargs=0 TimeTap call s:HoursWasted()
 " }}}
 " Auto commands {{{
 
-autocmd BufEnter *.* call s:TrackBuffer()
-autocmd BufWritePost *.* call s:StopTracking()
+autocmd BufEnter,WinEnter *.* call s:TrackBuffer()
+autocmd BufWritePre,WinLeave, *.* call s:StopTracking()
+autocmd BufWritePost *.* call s:SaveDatabase()
 
 " }}}
