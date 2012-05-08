@@ -101,7 +101,7 @@ command! -nargs=0 TimeTap call s:HoursWasted()
 " Auto commands {{{
 
 autocmd BufEnter,WinEnter *.* call s:TrackBuffer()
-autocmd BufWritePre,WinLeave, *.* call s:StopTracking()
+autocmd BufWritePre,WinLeave *.* call s:StopTracking()
 autocmd BufWritePost *.* call s:SaveDatabase()
 
 " }}}
