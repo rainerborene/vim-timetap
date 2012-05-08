@@ -10,12 +10,16 @@ if exists("g:timetap_loaded")
 endif
 
 let g:timetap_loaded = 1
-let g:timetap_database = "~/.timetapinfo"
-let s:timetap_records = { '__cache': [] }
 
-if !exists("g:timetap_do_mapping") || g:timetap_do_mapping == 1
-  nnoremap <leader>h :TimeTap<cr>
+if !exists("g:timetap_database")
+  let g:timetap_database = "~/.timetapinfo"
 endif
+
+if !exists("g:timetap_do_mapping") || g:timetap_do_mapping
+  nnoremap <silent> <leader>T :TimeTap<cr>
+endif
+
+let s:timetap_records = { '__cache': [] }
 
 " }}}
 " Functions {{{
@@ -62,6 +66,7 @@ function! s:StopTracking() " {{{
 endfunction " }}}
 
 function! s:SaveDatabase() "{{{
+  silent exe '!touch ' . g:timetap_database
   let data = readfile(expand(g:timetap_database), "b")
   for line in s:timetap_records['__cache']
     call add(data, line)
@@ -72,7 +77,7 @@ endfunction " }}}
 
 function! s:HoursWasted() " {{{
   echohl Question
-  let query = input("Working directory: ", expand("%:p:h"), "dir")
+  let query = input("Working directory: ", getcwd(), "dir")
   redraw
 
   let seconds = 0
