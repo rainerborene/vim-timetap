@@ -1,20 +1,20 @@
-" plugin/timetape.vim
+" plugin/timetap.vim
 "
 " Author: Rainer Borene <https://github.com/rainerborene>
 " Licensed under the same terms of Vim.
 
 " Initialization {{{
 
-if exists("g:timetape_loaded")
+if exists("g:timetap_loaded")
   finish
 endif
 
-let g:timetape_loaded = 1
-let g:timetape_database = "~/.timetapeinfo"
-let s:timetape_entries = {}
+let g:timetap_loaded = 1
+let g:timetap_database = "~/.timetapinfo"
+let s:timetap_records = {}
 
-if !exists("g:timetape_do_mapping") || g:timetape_do_mapping == 1
-  nnoremap <leader>h :TimeTape<cr>
+if !exists("g:timetap_do_mapping") || g:timetap_do_mapping == 1
+  nnoremap <leader>h :TimeTap<cr>
 endif
 
 " }}}
@@ -46,27 +46,27 @@ function! s:PrettyPrint(seconds) " {{{
 endfunction " }}}
 
 function! s:TrackBuffer() " {{{
-  let s:timetape_entries[expand("%:p")] = localtime()
+  let s:timetap_records[expand("%:p")] = localtime()
 endfunction " }}}
 
 function! s:StopTracking() " {{{
   let l:full_path = expand("%:p")
-  let l:start_date = get(s:timetape_entries, l:full_path)
+  let l:start_date = get(s:timetap_records, l:full_path)
   let l:end_date = localtime()
 
   " Register values to the database
   call s:Register(l:full_path, l:start_date, l:end_date)
 
   " Restart current timestamp
-  let s:timetape_entries[l:full_path] = localtime()
+  let s:timetap_records[l:full_path] = localtime()
 endfunction " }}}
 
 function! s:Register(path, start, end) "{{{
-  silent exe '!touch ' . g:timetape_database
+  silent exe '!touch ' . g:timetap_database
   let l:line = printf("%s|%s|%s", a:path, a:start, a:end)
-  let l:data = readfile(expand(g:timetape_database), "b")
+  let l:data = readfile(expand(g:timetap_database), "b")
   call add(l:data, l:line)
-  call writefile(l:data, expand(g:timetape_database), "b")
+  call writefile(l:data, expand(g:timetap_database), "b")
 endfunction " }}}
 
 function! s:HoursWasted() " {{{
@@ -75,7 +75,7 @@ function! s:HoursWasted() " {{{
   redraw
 
   let seconds = 0
-  for line in readfile(expand(g:timetape_database), '')
+  for line in readfile(expand(g:timetap_database), '')
     let fields = split(line, "|")
     if !empty(fields) && fields[0] =~ query
       let period = abs(fields[1] - fields[2])
@@ -88,7 +88,7 @@ function! s:HoursWasted() " {{{
   echohl None
 endfunction " }}}
 
-command! -nargs=0 TimeTape call s:HoursWasted()
+command! -nargs=0 TimeTap call s:HoursWasted()
 
 " }}}
 " Auto commands {{{
