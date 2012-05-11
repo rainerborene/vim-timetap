@@ -40,6 +40,10 @@ function! s:GetAbsolutePath()
   return expand("%:p")
 endfunction
 
+function! s:IsTracked(f)
+  return !empty(a:f) && has_key(s:timetap_records, a:f)
+endfunction
+
 " public {{{
 function! timetap#TrackBuffer() " {{{
   let path = s:GetAbsolutePath()
@@ -53,7 +57,7 @@ endfunction " }}}
 function! timetap#StopTracking() " {{{
   let full_path = s:GetAbsolutePath()
 
-  if empty(full_path) || !has_key(s:timetap_records, full_path)
+  if !s:IsTracked(full_path)
     return
   endif
 
@@ -67,7 +71,10 @@ endfunction " }}}
 
 function! timetap#SaveDatabase() "{{{
   " FIXME: only works in *nix system
-  silent exe '!touch ' . g:timetap_database
+  if executable("touch")
+    silent exe "!touch " . g:timetap_database
+  endif
+
   let data = readfile(expand(g:timetap_database), "b")
   for line in s:timetap_records['__cache']
     call add(data, line)

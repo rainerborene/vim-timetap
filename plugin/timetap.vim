@@ -43,3 +43,4 @@ autocmd BufWritePost * call timetap#SaveDatabase()
 let &cpo = s:saved_cpo
 unlet s:saved_cpo
 
+" vim: fen fdm=marker et ts=2 sw=2 sts=2
