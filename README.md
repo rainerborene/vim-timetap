@@ -18,6 +18,17 @@ paste:
 
     git clone git://github.com/rainerborene/vim-timetap.git ~/.vim/bundle/timetap
 
+[Vundle](https://github.com/gmarik/vundle.git) is very cool system to manage plugins as well.
+You just run command `:BundleInstall rainerborene/vim-timetap` inside Vim.  
+And also put `Bundle 'rainerborene/vim-timetap'` into `.vimrc`.
+
+## Related links
+
+[GitHub](https://github.com/rainerborene/vim-timetap)  
+[vim.org](http://www.vim.org/scripts/script.php?script_id=4055)
+
 ## License
 
-Copyright (c) Rainer Borene. Distributed under the same terms as Vim itself.
+Copyright (C) 2012 Rainer Borene and Takahiro Yoshihara.
+This plugin is distributed under the same terms as Vim itself.
+
