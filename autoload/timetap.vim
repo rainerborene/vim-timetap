@@ -40,6 +40,7 @@ function! s:GetAbsolutePath()
   return expand("%:p")
 endfunction
 
+" public {{{
 function! timetap#TrackBuffer() " {{{
   let path = s:GetAbsolutePath()
   if empty(path)
@@ -99,7 +100,9 @@ function! timetap#HoursWasted() " {{{
     echohl None
   endif
 endfunction " }}}
+" }}}
 
 let &cpo = s:saved_cpo
 unlet s:saved_cpo
 
+" vim: fen fdm=marker et ts=2 sw=2 sts=2
