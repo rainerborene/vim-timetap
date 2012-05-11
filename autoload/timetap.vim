@@ -1,12 +1,15 @@
-" plugin/timetap.vim
+" autoload/timetap.vim
 "
 " Author: Rainer Borene <https://github.com/rainerborene>
 "         Takahiro Yoshiahra <https://github.com/tacahiroy>
 " Licensed under the same terms of Vim.
 
+let s:saved_cpo = &cpo
+set cpo&vim
+
 let s:timetap_records = { '__cache': [] }
 
-" Functions {{{
+" Functions
 
 function! s:DateDebug(values) " {{{
   let from = strftime("%H:%M:%S", a:values[1])
@@ -84,4 +87,7 @@ function! timetap#HoursWasted() " {{{
     echohl None
   endif
 endfunction " }}}
+
+let &cpo = s:saved_cpo
+unlet s:saved_cpo
 
