@@ -1,0 +1,56 @@
+*timetap.txt*  How much time did you spend your time with Vim?
+
+*timetap.vim*
+Version: 0.0.1
+Author:   Rainer Borene <https://github.com/rainerborene>
+          Takahiro Yoshihara <https://github.com/tacahiroy>
+
+
+==============================================================================
+CONTENTS					*timetap-contents*
+
+|timetap-intro|		Introduction
+|timetap-commands|	Commands
+|timetap-settings|	Settings
+|timetap-license|		License
+|timetap-about|		About
+
+==============================================================================
+INTRODUCTION					*timetap-intro*
+
+|timetap.vim| is an edit time counter.
+It requires Vim 7.0 or later and |+float| feature is required.
+
+Probably, this plugin only works if |compatible| is not set.
+{Vi does not have any of these features.}
+
+
+==============================================================================
+COMMANDS					*timetap-commands*
+
+						*timetap-:TimeTap*
+:TimeTap
+
+
+==============================================================================
+SETTINGS					*timetap-settings*
+
+	This will be implemented.
+
+==============================================================================
+LICENSE						*timetap-license*
+
+timetap.vim is distributed under the same terms as Vim itself.
+Copyright (C) 2012 Rainer Borene and Takahiro Yoshihara
+
+
+==============================================================================
+ABOUT                                           *timetap-about*
+
+You can get the latest version on GitHub:
+
+* https://github.com/rainerborene/vim-timetap
+* http://www.vim.org/scripts/script.php?script_id=4055
+
+
+ vim:tw=78:et:ts=8:ft=help:norl:
