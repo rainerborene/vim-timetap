@@ -7,7 +7,7 @@
 let s:saved_cpo = &cpo
 set cpo&vim
 
-let s:timetap_records = { '__cache': [] }
+let s:timetap_records = { "__cache": [] }
 
 " Functions
 
@@ -36,20 +36,32 @@ function! s:PrettyPrint(seconds) " {{{
   return join(pp)
 endfunction " }}}
 
+function! s:GetAbsolutePath()
+  return expand("%:p")
+endfunction
+
 function! timetap#TrackBuffer() " {{{
-  let s:timetap_records[expand("%:p")] = localtime()
+  let path = s:GetAbsolutePath()
+  if empty(path)
+    return
+  endif
+
+  let s:timetap_records[path] = localtime()
 endfunction " }}}
 
 function! timetap#StopTracking() " {{{
-  let full_path = expand("%:p")
+  let full_path = s:GetAbsolutePath()
+
+  if empty(full_path) || !has_key(s:timetap_records, full_path)
+    return
+  endif
+
   let start_date = get(s:timetap_records, full_path)
   let end_date = localtime()
 
-  if !empty(full_path)
-    let line = printf("%s|%s|%s", full_path, start_date, end_date)
-    call add(s:timetap_records['__cache'], line)
-    let s:timetap_records[full_path] = localtime()
-  endif
+  let line = printf("%s|%s|%s", full_path, start_date, end_date)
+  call add(s:timetap_records['__cache'], line)
+  let s:timetap_records[full_path] = localtime()
 endfunction " }}}
 
 function! timetap#SaveDatabase() "{{{
