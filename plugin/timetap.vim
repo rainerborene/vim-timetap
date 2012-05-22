@@ -17,6 +17,8 @@ if !has("float")
   finish
 endif
 
+" }}}
+
 let s:saved_cpo = &cpo
 set cpo&vim
 
@@ -25,18 +27,33 @@ if !exists("g:timetap_database")
   let g:timetap_database = "~/.timetapinfo"
 endif
 
-command! -nargs=0 TimeTap call timetap#HoursWasted()
+" command! -nargs=0 TimeTap call timetap#HoursWasted()
+
+command! -nargs=0 TimeTap call s:tt.show(expand("%:p"))
+command! -nargs=0 TimeTapProject call s:tt.show(getcwd())
 
 if !exists("g:timetap_do_mapping") || g:timetap_do_mapping
   nnoremap <silent> <leader>T :TimeTap<Cr>
 endif
-" }}}
 
-" Auto commands {{{
-autocmd BufEnter,WinEnter,FocusGained * call timetap#TrackBuffer()
-autocmd BufWritePre,WinLeave,FocusLost * call timetap#StopTracking()
-autocmd BufWritePost * call timetap#SaveDatabase()
-" autocmd CursorHold,CursorHoldI *
+" data-file is managed each day
+" today
+let s:tt = timetap#new(timetap#dbname(0))
+" total
+let s:tt.summary = timetap#new(timetap#dbname(1))
+
+" Command
+
+
+augroup TimeTap
+  autocmd!
+
+  autocmd BufEnter,WinEnter,FocusGained * call s:tt.StartTracking()
+  autocmd BufWritePre,WinLeave,FocusLost * call s:tt.StopTracking()
+  autocmd BufWritePost * call s:tt.save()
+  autocmd CursorHold,CursorHoldI * call s:tt.detect_cursor_move()
+augroup END
+
 " }}}
 
 
